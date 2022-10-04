@@ -56,6 +56,11 @@ There are two events that get publish in `HangingProtocolService`:
 - `addProtocol`: adds provided protocol to the list of registered protocols
   for matching
 
+- `setActiveProtocols`: Choose the protocols which are active.  Can take a
+single protocol id or a list.  When a single one is provided, that one will be
+applied whether or not the required rules match.  Called automatically on mode
+init.
+
 - `run({studies, activeStudy, displaySets }, protocolId)`: runs the HPService with the provided
   studyMetaData and optional protocolId. If protocol is not given, HP Matching
   engine will search all the registered protocols for the best matching one
@@ -65,7 +70,13 @@ There are two events that get publish in `HangingProtocolService`:
 
 Default initialization of the modes handles running the `HangingProtocolService`
 
+## Hanging Protocol Instance Definition
+A hanging protocol has an id and/or a name as provided by the extension, and
+then a single protocol instance.  The default id for a protocol is the extension
+id, plus the name if provided.  Otherwise, a specific id can be specified.  The
+'default' name is used as the hanging protocol id when no other protocol applies.
 
+See the typescript definitions for more details on the structure.
 
 ## Custom Attribute
 In some situations, you might want to match based on a custom attribute and not the DICOM tags. For instance,
@@ -81,17 +92,17 @@ const deafultProtocol = {
   /** ... **/
   protocolMatchingRules: [
     {
-      id: 'vSjk7NCYjtdS3XZAw',
       weight: 3,
       attribute: 'timepoint',
       constraint: {
-        equals: {
-          value: 'first',
-        },
+        equals: 'first',
       },
       required: false,
     },
   ],
+  displaySetSelectors: {
+    /** ... */
+  }
   stages: [
     /** ... **/
   ],
